@@ -1,0 +1,10 @@
+# Ignore Dependencies
+node_modules/
+
+# Ignore All .env files (This works for root AND backend folder automatically)
+.env
+
+# Other specific files to ignore
+ADMIN_SETUP.md
+README.md
+env.example

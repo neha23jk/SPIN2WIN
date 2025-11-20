@@ -1,0 +1,270 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-gray-200;
+  }
+  
+  body {
+    @apply bg-beyblade-dark text-white font-beyblade;
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(0, 246, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 0, 77, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(250, 255, 0, 0.05) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-neon-blue to-neon-purple text-white font-bold py-3 px-6 rounded-lg 
+           shadow-neon-blue hover:shadow-neon-purple transform hover:scale-105 
+           transition-all duration-300 ease-in-out hover:animate-pulse-glow;
+  }
+  
+  .btn-secondary {
+    @apply bg-gradient-to-r from-neon-red to-neon-yellow text-beyblade-dark font-bold py-3 px-6 rounded-lg 
+           shadow-neon-red hover:shadow-neon-yellow transform hover:scale-105 
+           transition-all duration-300 ease-in-out;
+  }
+  
+  .card-glow {
+    @apply bg-gradient-to-br from-beyblade-purple/20 to-beyblade-violet/20 
+           backdrop-blur-sm border border-neon-blue/30 rounded-xl 
+           shadow-glow hover:shadow-neon-blue transition-all duration-300;
+  }
+  
+  .text-glow {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-neon-blue via-neon-purple to-neon-red 
+           animate-glow;
+  }
+  
+  .text-neon {
+    @apply text-neon-blue drop-shadow-[0_0_10px_rgba(0,246,255,0.5)];
+  }
+  
+  .beyblade-spin {
+    @apply animate-beyblade-spin;
+  }
+  
+  .energy-burst {
+    @apply animate-energy-burst;
+  }
+  
+  .particle-float {
+    @apply animate-particle-float;
+  }
+  
+  .lens-flare {
+    @apply animate-lens-flare;
+  }
+}
+
+@layer utilities {
+  .text-shadow-neon {
+    text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
+  }
+  
+  .text-shadow-glow {
+    text-shadow: 0 0 10px #00f6ff, 0 0 20px #00f6ff, 0 0 30px #00f6ff;
+  }
+  
+  .backdrop-blur-neon {
+    backdrop-filter: blur(10px) saturate(150%);
+  }
+  
+  .gradient-text {
+    background: linear-gradient(45deg, #00f6ff, #ff004d, #faff00, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .neon-border {
+    border: 2px solid transparent;
+    background: linear-gradient(45deg, #00f6ff, #ff004d, #faff00, #8b5cf6) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: exclude;
+  }
+}
+
+/* Custom animations */
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink {
+  0%, 50% { border-color: transparent; }
+  51%, 100% { border-color: #00f6ff; }
+}
+
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid #00f6ff;
+  white-space: nowrap;
+  animation: typewriter 3s steps(40, end), blink 0.75s step-end infinite;
+}
+
+/* Particle system */
+.particle-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #00f6ff;
+  border-radius: 50%;
+  animation: particle-float 4s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+.particle:nth-child(2n) {
+  background: #ff004d;
+  animation-delay: 1s;
+  animation-duration: 5s;
+}
+
+.particle:nth-child(3n) {
+  background: #faff00;
+  animation-delay: 2s;
+  animation-duration: 6s;
+}
+
+.particle:nth-child(4n) {
+  background: #8b5cf6;
+  animation-delay: 3s;
+  animation-duration: 7s;
+}
+
+/* Lens flare effect */
+.lens-flare {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: lens-flare 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Energy burst effect */
+.energy-burst {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, #00f6ff 0%, #ff004d 50%, transparent 70%);
+  border-radius: 50%;
+  animation: energy-burst 0.6s ease-out;
+  pointer-events: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #05011a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #00f6ff, #ff004d);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #ff004d, #00f6ff);
+}
+
+/* Selection */
+::selection {
+  background: #00f6ff;
+  color: #05011a;
+}
+
+/* Focus styles */
+.focus-neon:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #00f6ff, 0 0 10px #00f6ff;
+}
+
+/* Loading spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 246, 255, 0.3);
+  border-top: 4px solid #00f6ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Glitch effect */
+.glitch {
+  position: relative;
+  color: #00f6ff;
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  animation: glitch 2s infinite;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch::before {
+  animation: glitch-1 0.5s infinite;
+  color: #ff004d;
+  z-index: -1;
+}
+
+.glitch::after {
+  animation: glitch-2 0.5s infinite;
+  color: #faff00;
+  z-index: -2;
+}
+
+@keyframes glitch {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch-1 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(2px, -2px); }
+  40% { transform: translate(-2px, 2px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(2px, 2px); }
+}
+
+@keyframes glitch-2 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, -2px); }
+  40% { transform: translate(2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(-2px, 2px); }
+}

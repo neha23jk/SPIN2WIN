@@ -145,10 +145,8 @@ const eventInfoSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index for efficient queries
 eventInfoSchema.index({ isActive: 1 });
 
-// Virtual for event status
 eventInfoSchema.virtual('status').get(function() {
   const now = new Date();
   

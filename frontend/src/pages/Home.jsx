@@ -142,7 +142,6 @@ const Home = () => {
               whileTap={{ scale: 0.95 }}
               onClick={() => {
                 playSound('click')
-                //window.location.href = '/Register'
                 navigate('/register');
               }}
               className="btn-secondary text-lg px-10 py-5"

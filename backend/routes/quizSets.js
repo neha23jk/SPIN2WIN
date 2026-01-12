@@ -7,9 +7,7 @@ const { authenticateToken, requireAdmin, optionalAuth } = require('../middleware
 
 const router = express.Router();
 
-// @route   GET /api/quiz-sets
-// @desc    Get all quiz sets
-// @access  Public
+
 router.get('/', optionalAuth, async (req, res) => {
   try {
     const { isActive, isCompleted, battleNumber, limit = 20, page = 1 } = req.query;
@@ -47,9 +45,7 @@ router.get('/', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   GET /api/quiz-sets/active
-// @desc    Get currently active quiz set
-// @access  Public
+
 router.get('/active', optionalAuth, async (req, res) => {
   try {
     const activeQuizSet = await QuizSet.findOne({ isActive: true, isCompleted: false })
@@ -62,7 +58,6 @@ router.get('/active', optionalAuth, async (req, res) => {
       return res.json({ quizSet: null });
     }
 
-    // Don't send correct answers to non-admin users
     const quizSetData = activeQuizSet.toObject();
     if (!req.user || req.user.role !== 'admin') {
       quizSetData.questions = quizSetData.questions.map(question => {
@@ -80,9 +75,7 @@ router.get('/active', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   GET /api/quiz-sets/:id
-// @desc    Get single quiz set
-// @access  Public
+
 router.get('/:id', optionalAuth, async (req, res) => {
   try {
     const quizSet = await QuizSet.findById(req.params.id)
@@ -98,7 +91,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
       });
     }
 
-    // Don't send correct answers to non-admin users
+    
     const quizSetData = quizSet.toObject();
     if (!req.user || req.user.role !== 'admin') {
       quizSetData.questions = quizSetData.questions.map(question => {
@@ -116,9 +109,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   POST /api/quiz-sets
-// @desc    Create new quiz set
-// @access  Admin
+
 router.post('/', authenticateToken, requireAdmin, [
   body('name')
     .trim()
@@ -139,7 +130,7 @@ router.post('/', authenticateToken, requireAdmin, [
     .withMessage('Questions must be an array with at least 1 question')
 ], async (req, res) => {
   try {
-    // Check validation errors
+   
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -150,7 +141,6 @@ router.post('/', authenticateToken, requireAdmin, [
 
     const { name, description, battleNumber, matchId, totalQuestions, questions } = req.body;
 
-    // Verify match exists
     const match = await Match.findById(matchId);
     if (!match) {
       return res.status(400).json({
@@ -158,7 +148,6 @@ router.post('/', authenticateToken, requireAdmin, [
       });
     }
 
-    // Check if quiz set already exists for this battle number
     const existingQuizSet = await QuizSet.findOne({ battleNumber });
     if (existingQuizSet) {
       return res.status(400).json({
@@ -166,7 +155,6 @@ router.post('/', authenticateToken, requireAdmin, [
       });
     }
 
-    // Validate questions
     for (let i = 0; i < questions.length; i++) {
       const question = questions[i];
       if (!question.question || question.question.trim().length < 10) {
@@ -212,9 +200,6 @@ router.post('/', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   PUT /api/quiz-sets/:id
-// @desc    Update quiz set
-// @access  Admin
 router.put('/:id', authenticateToken, requireAdmin, [
   body('name')
     .optional()
@@ -227,7 +212,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
     .withMessage('Total questions must be between 1 and 20')
 ], async (req, res) => {
   try {
-    // Check validation errors
+   
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -245,7 +230,6 @@ router.put('/:id', authenticateToken, requireAdmin, [
       });
     }
 
-    // Don't allow updates if quiz set is active or completed
     if (quizSet.isActive || quizSet.isCompleted) {
       return res.status(400).json({
         message: 'Cannot update active or completed quiz set'
@@ -257,7 +241,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
     if (description !== undefined) updateData.description = description;
     if (totalQuestions) updateData.totalQuestions = totalQuestions;
     if (questions) {
-      // Validate questions
+      
       for (let i = 0; i < questions.length; i++) {
         const question = questions[i];
         if (!question.question || question.question.trim().length < 10) {
@@ -300,9 +284,6 @@ router.put('/:id', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   POST /api/quiz-sets/:id/start
-// @desc    Start quiz set
-// @access  Admin
 router.post('/:id/start', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const quizSet = await QuizSet.findById(req.params.id);
@@ -338,9 +319,6 @@ router.post('/:id/start', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// @route   POST /api/quiz-sets/:id/end
-// @desc    End quiz set
-// @access  Admin
 router.post('/:id/end', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const quizSet = await QuizSet.findById(req.params.id);
@@ -370,9 +348,6 @@ router.post('/:id/end', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// @route   POST /api/quiz-sets/:id/match-result
-// @desc    Set match result and update quiz answers
-// @access  Admin
 router.post('/:id/match-result', authenticateToken, requireAdmin, [
   body('winner')
     .isMongoId()
@@ -386,7 +361,7 @@ router.post('/:id/match-result', authenticateToken, requireAdmin, [
     .withMessage('Battle duration must be a non-negative integer')
 ], async (req, res) => {
   try {
-    // Check validation errors
+   
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -406,7 +381,6 @@ router.post('/:id/match-result', authenticateToken, requireAdmin, [
       });
     }
 
-    // Verify winner is one of the match players
     const match = quizSet.matchId;
     if (winner !== match.player1.toString() && winner !== match.player2.toString()) {
       return res.status(400).json({
@@ -414,10 +388,8 @@ router.post('/:id/match-result', authenticateToken, requireAdmin, [
       });
     }
 
-    // Determine loser
     const loser = winner === match.player1.toString() ? match.player2 : match.player1;
 
-    // Get blader details
     const [winnerBlader, loserBlader] = await Promise.all([
       Blader.findById(winner),
       Blader.findById(loser)
@@ -444,9 +416,7 @@ router.post('/:id/match-result', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   DELETE /api/quiz-sets/:id
-// @desc    Delete quiz set
-// @access  Admin
+
 router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const quizSet = await QuizSet.findById(req.params.id);
@@ -456,7 +426,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
       });
     }
 
-    // Check if quiz set is active
+    
     if (quizSet.isActive) {
       return res.status(400).json({
         message: 'Cannot delete active quiz set'

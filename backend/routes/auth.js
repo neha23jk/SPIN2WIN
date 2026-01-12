@@ -6,7 +6,7 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Generate JWT token
+
 const generateToken = (userId) => {
   return jwt.sign(
     { userId },
@@ -15,9 +15,7 @@ const generateToken = (userId) => {
   );
 };
 
-// @route   POST /api/auth/register
-// @desc    Register a new user
-// @access  Public
+
 router.post('/register', [
   body('name')
     .trim()
@@ -36,7 +34,7 @@ router.post('/register', [
     .withMessage('Password must be at least 6 characters long')
 ], async (req, res) => {
   try {
-    // Check validation errors
+   
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -47,7 +45,7 @@ router.post('/register', [
 
     const { name, email, institute, password } = req.body;
 
-    // Check if user already exists
+   
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
@@ -55,7 +53,7 @@ router.post('/register', [
       });
     }
 
-    // Create new user
+   
     const user = new User({
       name,
       email,
@@ -65,7 +63,7 @@ router.post('/register', [
 
     await user.save();
 
-    // Generate token
+   
     const token = generateToken(user._id);
 
     res.status(201).json({
@@ -88,9 +86,7 @@ router.post('/register', [
   }
 });
 
-// @route   POST /api/auth/login
-// @desc    Login user
-// @access  Public
+
 router.post('/login', [
   body('email')
     .isEmail()
@@ -101,7 +97,7 @@ router.post('/login', [
     .withMessage('Password is required')
 ], async (req, res) => {
   try {
-    // Check validation errors
+   
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -112,7 +108,7 @@ router.post('/login', [
 
     const { email, password } = req.body;
 
-    // Find user by email
+   
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
@@ -120,14 +116,14 @@ router.post('/login', [
       });
     }
 
-    // Check if account is active
+   
     if (!user.isActive) {
       return res.status(400).json({
         message: 'Account is deactivated'
       });
     }
 
-    // Check password
+   
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({
@@ -135,7 +131,7 @@ router.post('/login', [
       });
     }
 
-    // Generate token
+    
     const token = generateToken(user._id);
 
     res.json({
@@ -158,9 +154,7 @@ router.post('/login', [
   }
 });
 
-// @route   GET /api/auth/me
-// @desc    Get current user
-// @access  Private
+
 router.get('/me', authenticateToken, async (req, res) => {
   try {
     res.json({
@@ -182,9 +176,7 @@ router.get('/me', authenticateToken, async (req, res) => {
   }
 });
 
-// @route   PUT /api/auth/profile
-// @desc    Update user profile
-// @access  Private
+
 router.put('/profile', authenticateToken, [
   body('name')
     .optional()
@@ -198,7 +190,7 @@ router.put('/profile', authenticateToken, [
     .withMessage('Institute must be between 2 and 100 characters')
 ], async (req, res) => {
   try {
-    // Check validation errors
+   
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -231,9 +223,7 @@ router.put('/profile', authenticateToken, [
   }
 });
 
-// @route   POST /api/auth/change-password
-// @desc    Change user password
-// @access  Private
+
 router.post('/change-password', authenticateToken, [
   body('currentPassword')
     .notEmpty()
@@ -243,7 +233,7 @@ router.post('/change-password', authenticateToken, [
     .withMessage('New password must be at least 6 characters long')
 ], async (req, res) => {
   try {
-    // Check validation errors
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -254,10 +244,10 @@ router.post('/change-password', authenticateToken, [
 
     const { currentPassword, newPassword } = req.body;
 
-    // Get user with password
+    
     const user = await User.findById(req.user._id);
     
-    // Check current password
+    
     const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch) {
       return res.status(400).json({
@@ -265,7 +255,7 @@ router.post('/change-password', authenticateToken, [
       });
     }
 
-    // Update password
+  
     user.password = newPassword;
     await user.save();
 

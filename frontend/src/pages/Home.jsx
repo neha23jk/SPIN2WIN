@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion'
 import { Zap, Calendar, Clock, MapPin, Star, Trophy, Users, Brain } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
@@ -141,9 +140,7 @@ const Home = () => {
               whileTap={{ scale: 0.95 }}
               onClick={() => {
                 playSound('click')
-               // window.location.href = '/register'
-                const navigate = useNavigate();
-                navigate("/register");
+                window.location.href = '/Register'
               }}
               className="btn-secondary text-lg px-10 py-5"
             >

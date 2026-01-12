@@ -42,7 +42,7 @@ const quizSetSchema = new mongoose.Schema({
       }
     },
     correctAnswer: {
-      type: Number, // Index of correct option (0-based)
+      type: Number, 
       required: [true, 'Correct answer is required'],
       min: [0, 'Correct answer index must be non-negative'],
       validate: {
@@ -59,7 +59,7 @@ const quizSetSchema = new mongoose.Schema({
       max: [10, 'Points cannot exceed 10']
     },
     timeLimit: {
-      type: Number, // in seconds
+      type: Number, 
       default: 30,
       min: [10, 'Time limit must be at least 10 seconds'],
       max: [300, 'Time limit cannot exceed 5 minutes']
@@ -76,7 +76,7 @@ const quizSetSchema = new mongoose.Schema({
     },
     isRevealed: {
       type: Boolean,
-      default: false // Whether the correct answer has been revealed
+      default: false 
     }
   }],
   totalQuestions: {
@@ -109,7 +109,7 @@ const quizSetSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  // Match result dependent fields
+  
   matchResult: {
     winner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -127,7 +127,7 @@ const quizSetSchema = new mongoose.Schema({
       default: null
     },
     battleDuration: {
-      type: Number, // in seconds
+      type: Number, 
       default: null
     },
     isResultSet: {
@@ -139,31 +139,31 @@ const quizSetSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Indexes for efficient queries
+
 quizSetSchema.index({ battleNumber: 1 });
 quizSetSchema.index({ matchId: 1 });
 quizSetSchema.index({ isActive: 1, isCompleted: 1 });
 
-// Virtual for accuracy percentage
+
 quizSetSchema.virtual('accuracyPercentage').get(function() {
   return this.totalResponses > 0 
     ? Math.round((this.correctResponses / this.totalResponses) * 100) 
     : 0;
 });
 
-// Virtual for total points
+
 quizSetSchema.virtual('totalPoints').get(function() {
   return this.questions.reduce((total, question) => total + question.points, 0);
 });
 
-// Method to start quiz set
+
 quizSetSchema.methods.startQuizSet = function() {
   this.isActive = true;
   this.startedAt = new Date();
   return this.save();
 };
 
-// Method to end quiz set
+
 quizSetSchema.methods.endQuizSet = function() {
   this.isActive = false;
   this.isCompleted = true;
@@ -171,19 +171,19 @@ quizSetSchema.methods.endQuizSet = function() {
   return this.save();
 };
 
-// Method to set match result and update quiz answers
+
 quizSetSchema.methods.setMatchResult = async function(matchResult) {
   this.matchResult = {
     ...matchResult,
     isResultSet: true
   };
   
-  // Update questions based on match result
+  
   this.questions.forEach(question => {
     if (question.category === 'battle_prediction') {
-      // Update correct answers based on actual match result
+      
       if (question.question.includes('winner')) {
-        // Find the option that matches the winner
+        
         const winnerName = matchResult.winner?.name;
         const winnerIndex = question.options.findIndex(option => 
           option.toLowerCase().includes(winnerName?.toLowerCase())
@@ -192,7 +192,7 @@ quizSetSchema.methods.setMatchResult = async function(matchResult) {
           question.correctAnswer = winnerIndex;
         }
       } else if (question.question.includes('battle type') || question.question.includes('finish')) {
-        // Update battle type questions
+        
         const battleTypeIndex = question.options.findIndex(option => 
           option.toLowerCase().includes(matchResult.battleType?.toLowerCase())
         );

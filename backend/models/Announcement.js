@@ -35,7 +35,6 @@ const announcementSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index for efficient queries
 announcementSchema.index({ createdAt: -1 });
 announcementSchema.index({ isActive: 1, expiresAt: 1 });
 

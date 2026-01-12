@@ -25,7 +25,7 @@ const ContactUs = () => {
     setIsSubmitting(true)
     playSound('click')
     
-    // Simulate form submission
+   
     setTimeout(() => {
       setIsSubmitting(false)
       setFormData({ name: '', email: '', subject: '', message: '' })

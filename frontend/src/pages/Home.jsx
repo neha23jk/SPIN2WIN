@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from "react-router-dom";
 import { motion } from 'framer-motion'
 import { Zap, Calendar, Clock, MapPin, Star, Trophy, Users, Brain } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
@@ -8,6 +9,7 @@ import EventTimeline from '../components/EventTimeline'
 import BeybladeIcon from '../components/BeybladeIcon'
 
 const Home = () => {
+  const navigate = useNavigate();
   const [announcements, setAnnouncements] = useState([])
   const [eventInfo, setEventInfo] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -140,7 +142,8 @@ const Home = () => {
               whileTap={{ scale: 0.95 }}
               onClick={() => {
                 playSound('click')
-                window.location.href = '/Register'
+                //window.location.href = '/Register'
+                navigate('/register');
               }}
               className="btn-secondary text-lg px-10 py-5"
             >

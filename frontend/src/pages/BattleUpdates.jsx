@@ -11,7 +11,7 @@ const BattleUpdates = () => {
   const [matches, setMatches] = useState([])
   const [selectedBlader, setSelectedBlader] = useState(null)
   const [showModal, setShowModal] = useState(false)
-  const [viewMode, setViewMode] = useState('arena') // 'arena' or 'name'
+  const [viewMode, setViewMode] = useState('arena') 
   const [loading, setLoading] = useState(true)
   const { playSound } = useSound()
 

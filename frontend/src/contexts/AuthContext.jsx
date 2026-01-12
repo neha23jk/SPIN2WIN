@@ -65,7 +65,7 @@ const authReducer = (state, action) => {
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
 
-  // Set up axios interceptor for token
+  
   useEffect(() => {
     if (state.token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${state.token}`
@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [state.token])
 
-  // Check if user is logged in on app start
+  
   useEffect(() => {
     const checkAuth = async () => {
       if (state.token) {

@@ -10,7 +10,6 @@ export const SoundProvider = ({ children }) => {
   })
   const [volume, setVolume] = useState(0.5)
 
-  // Sound effects (using placeholder URLs - replace with actual sound files)
   const [playSpin] = useSoundHook('/sounds/beyblade-spin.mp3', { 
     volume: isMuted ? 0 : volume,
     interrupt: true 
@@ -56,7 +55,6 @@ export const SoundProvider = ({ children }) => {
     interrupt: true 
   })
 
-  // Update volume for all sounds when volume changes
   useEffect(() => {
     const sounds = [playSpin, playClash, playVictory, playDefeat, playBurst, playEnergy, playClick, playHover, playNotification, playQuizStart, playQuizEnd]
     sounds.forEach(sound => {
@@ -66,7 +64,6 @@ export const SoundProvider = ({ children }) => {
     })
   }, [volume, isMuted])
 
-  // Save mute state to localStorage
   useEffect(() => {
     localStorage.setItem('soundMuted', JSON.stringify(isMuted))
   }, [isMuted])

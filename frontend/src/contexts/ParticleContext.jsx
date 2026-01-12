@@ -62,7 +62,6 @@ export const ParticleProvider = ({ children }) => {
     
     setParticles(prev => [...prev, burst])
     
-    // Remove burst after animation
     setTimeout(() => {
       setParticles(prev => prev.filter(p => p.id !== burst.id))
     }, 600)
@@ -80,7 +79,6 @@ export const ParticleProvider = ({ children }) => {
     
     setParticles(prev => [...prev, flare])
     
-    // Remove flare after animation
     setTimeout(() => {
       setParticles(prev => prev.filter(p => p.id !== flare.id))
     }, 3000)

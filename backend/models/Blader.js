@@ -82,11 +82,9 @@ const bladerSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Indexes for efficient queries
 bladerSchema.index({ round: 1, isEliminated: 1 });
 bladerSchema.index({ battleNumber: 1 });
 
-// Virtual for win percentage
 bladerSchema.virtual('winPercentage').get(function() {
   const total = this.wins + this.losses;
   return total > 0 ? Math.round((this.wins / total) * 100) : 0;

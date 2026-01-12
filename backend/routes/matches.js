@@ -6,9 +6,7 @@ const { authenticateToken, requireAdmin, optionalAuth } = require('../middleware
 
 const router = express.Router();
 
-// @route   GET /api/matches
-// @desc    Get all matches
-// @access  Public
+
 router.get('/', optionalAuth, async (req, res) => {
   try {
     const { round, status, limit = 50, page = 1 } = req.query;
@@ -44,9 +42,7 @@ router.get('/', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   GET /api/matches/:id
-// @desc    Get single match
-// @access  Public
+
 router.get('/:id', optionalAuth, async (req, res) => {
   try {
     const match = await Match.findById(req.params.id)
@@ -70,9 +66,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   POST /api/matches
-// @desc    Create new match
-// @access  Admin
+
 router.post('/', authenticateToken, requireAdmin, [
   body('matchId')
     .trim()
@@ -100,7 +94,7 @@ router.post('/', authenticateToken, requireAdmin, [
     .withMessage('Scheduled time must be a valid date')
 ], async (req, res) => {
   try {
-    // Check validation errors
+   
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -111,7 +105,7 @@ router.post('/', authenticateToken, requireAdmin, [
 
     const { matchId, round, player1, player2, arenaId, battleNumber, scheduledAt, notes } = req.body;
 
-    // Check if match ID already exists
+    
     const existingMatch = await Match.findOne({ matchId });
     if (existingMatch) {
       return res.status(400).json({
@@ -119,7 +113,7 @@ router.post('/', authenticateToken, requireAdmin, [
       });
     }
 
-    // Verify players exist
+    
     const [player1Data, player2Data] = await Promise.all([
       Blader.findById(player1),
       Blader.findById(player2)
@@ -158,9 +152,7 @@ router.post('/', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   PUT /api/matches/:id
-// @desc    Update match
-// @access  Admin
+
 router.put('/:id', authenticateToken, requireAdmin, [
   body('status')
     .optional()
@@ -176,7 +168,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
     .withMessage('Winner must be a valid ID')
 ], async (req, res) => {
   try {
-    // Check validation errors
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -222,7 +214,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
     .populate('winner', 'name arenaId')
     .populate('loser', 'name arenaId');
 
-    // Update blader stats if match is completed
+  
     if (status === 'completed' && winner) {
       const winnerBlader = await Blader.findById(winner);
       const loserBlader = await Blader.findById(updatedMatch.loser);
@@ -255,9 +247,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   DELETE /api/matches/:id
-// @desc    Delete match
-// @access  Admin
+
 router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const match = await Match.findById(req.params.id);
@@ -267,7 +257,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
       });
     }
 
-    // Check if match is completed
+    
     if (match.status === 'completed') {
       return res.status(400).json({
         message: 'Cannot delete completed match'
@@ -287,9 +277,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// @route   GET /api/matches/round/:round
-// @desc    Get matches by round
-// @access  Public
+
 router.get('/round/:round', optionalAuth, async (req, res) => {
   try {
     const { round } = req.params;

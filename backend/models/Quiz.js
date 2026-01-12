@@ -25,7 +25,7 @@ const quizSchema = new mongoose.Schema({
     }
   },
   correctAnswer: {
-    type: Number, // Index of correct option (0-based)
+    type: Number, 
     required: [true, 'Correct answer is required'],
     min: [0, 'Correct answer index must be non-negative'],
     validate: {
@@ -42,7 +42,7 @@ const quizSchema = new mongoose.Schema({
     max: [10, 'Points cannot exceed 10']
   },
   timeLimit: {
-    type: Number, // in seconds
+    type: Number, 
     default: 30,
     min: [10, 'Time limit must be at least 10 seconds'],
     max: [300, 'Time limit cannot exceed 5 minutes']
@@ -90,26 +90,22 @@ const quizSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Indexes for efficient queries
 quizSchema.index({ battleNumber: 1 });
 quizSchema.index({ isActive: 1, isCompleted: 1 });
 quizSchema.index({ category: 1, difficulty: 1 });
 
-// Virtual for accuracy percentage
 quizSchema.virtual('accuracyPercentage').get(function() {
   return this.totalResponses > 0 
     ? Math.round((this.correctResponses / this.totalResponses) * 100) 
     : 0;
 });
 
-// Method to start quiz
 quizSchema.methods.startQuiz = function() {
   this.isActive = true;
   this.startedAt = new Date();
   return this.save();
 };
 
-// Method to end quiz
 quizSchema.methods.endQuiz = function() {
   this.isActive = false;
   this.isCompleted = true;

@@ -94,7 +94,6 @@
   }
 }
 
-/* Custom animations */
 @keyframes typewriter {
   from { width: 0; }
   to { width: 100%; }
@@ -112,7 +111,6 @@
   animation: typewriter 3s steps(40, end), blink 0.75s step-end infinite;
 }
 
-/* Particle system */
 .particle-container {
   position: fixed;
   top: 0;
@@ -151,7 +149,6 @@
   animation-duration: 7s;
 }
 
-/* Lens flare effect */
 .lens-flare {
   position: absolute;
   width: 200px;
@@ -162,7 +159,6 @@
   pointer-events: none;
 }
 
-/* Energy burst effect */
 .energy-burst {
   position: absolute;
   width: 100px;
@@ -173,7 +169,6 @@
   pointer-events: none;
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -191,19 +186,16 @@
   background: linear-gradient(45deg, #ff004d, #00f6ff);
 }
 
-/* Selection */
 ::selection {
   background: #00f6ff;
   color: #05011a;
 }
 
-/* Focus styles */
 .focus-neon:focus {
   outline: none;
   box-shadow: 0 0 0 2px #00f6ff, 0 0 10px #00f6ff;
 }
 
-/* Loading spinner */
 .spinner {
   width: 40px;
   height: 40px;
@@ -213,7 +205,6 @@
   animation: spin 1s linear infinite;
 }
 
-/* Glitch effect */
 .glitch {
   position: relative;
   color: #00f6ff;

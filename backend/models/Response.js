@@ -12,7 +12,7 @@ const responseSchema = new mongoose.Schema({
     required: [true, 'Quiz is required']
   },
   answer: {
-    type: Number, // Index of selected option (0-based)
+    type: Number, 
     required: [true, 'Answer is required'],
     min: [0, 'Answer index must be non-negative']
   },
@@ -26,12 +26,12 @@ const responseSchema = new mongoose.Schema({
     min: [0, 'Score cannot be negative']
   },
   responseTime: {
-    type: Number, // in seconds
+    type: Number, 
     required: [true, 'Response time is required'],
     min: [0, 'Response time cannot be negative']
   },
   timeRemaining: {
-    type: Number, // in seconds
+    type: Number, 
     required: [true, 'Time remaining is required'],
     min: [0, 'Time remaining cannot be negative']
   },
@@ -47,20 +47,16 @@ const responseSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Compound index to prevent duplicate responses
 responseSchema.index({ user: 1, quiz: 1 }, { unique: true });
 
-// Indexes for efficient queries
 responseSchema.index({ user: 1, isCorrect: 1 });
 responseSchema.index({ quiz: 1, isCorrect: 1 });
 responseSchema.index({ createdAt: -1 });
 
-// Virtual for response accuracy
 responseSchema.virtual('accuracy').get(function() {
   return this.isCorrect ? 100 : 0;
 });
 
-// Static method to get user statistics
 responseSchema.statics.getUserStats = async function(userId) {
   const stats = await this.aggregate([
     { $match: { user: mongoose.Types.ObjectId(userId) } },

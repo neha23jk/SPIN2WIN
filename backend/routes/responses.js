@@ -7,9 +7,7 @@ const { authenticateToken, requireAdmin, optionalAuth } = require('../middleware
 
 const router = express.Router();
 
-// @route   POST /api/responses
-// @desc    Submit quiz response
-// @access  Private
+
 router.post('/', authenticateToken, [
   body('quizId')
     .isMongoId()
@@ -25,7 +23,7 @@ router.post('/', authenticateToken, [
     .withMessage('Time remaining must be a non-negative number')
 ], async (req, res) => {
   try {
-    // Check validation errors
+   
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -36,7 +34,7 @@ router.post('/', authenticateToken, [
 
     const { quizId, answer, responseTime, timeRemaining } = req.body;
 
-    // Check if quiz exists and is active
+    
     const quiz = await Quiz.findById(quizId);
     if (!quiz) {
       return res.status(404).json({
@@ -50,7 +48,7 @@ router.post('/', authenticateToken, [
       });
     }
 
-    // Check if user already responded
+    
     const existingResponse = await Response.findOne({ user: req.user._id, quiz: quizId });
     if (existingResponse) {
       return res.status(400).json({
@@ -58,18 +56,18 @@ router.post('/', authenticateToken, [
       });
     }
 
-    // Validate answer index
+    
     if (answer >= quiz.options.length) {
       return res.status(400).json({
         message: 'Answer index is out of range'
       });
     }
 
-    // Check if answer is correct
+  
     const isCorrect = answer === quiz.correctAnswer;
     const score = isCorrect ? quiz.points : 0;
 
-    // Get user's current streak
+    
     const lastResponse = await Response.findOne({ user: req.user._id })
       .sort({ createdAt: -1 });
     
@@ -89,7 +87,7 @@ router.post('/', authenticateToken, [
       totalStreak = streak;
     }
 
-    // Create response
+   
     const response = new Response({
       user: req.user._id,
       quiz: quizId,
@@ -104,14 +102,14 @@ router.post('/', authenticateToken, [
 
     await response.save();
 
-    // Update quiz statistics
+    
     quiz.totalResponses += 1;
     if (isCorrect) {
       quiz.correctResponses += 1;
     }
     await quiz.save();
 
-    // Update user's total score
+  
     await User.findByIdAndUpdate(req.user._id, {
       $inc: { totalScore: score },
       $push: {
@@ -141,12 +139,10 @@ router.post('/', authenticateToken, [
   }
 });
 
-// @route   GET /api/responses/user/:userId
-// @desc    Get user's responses
-// @access  Private (Admin or own responses)
+
 router.get('/user/:userId', authenticateToken, async (req, res) => {
   try {
-    // Check if user can access these responses
+    
     if (req.user.role !== 'admin' && req.user._id.toString() !== req.params.userId) {
       return res.status(403).json({
         message: 'Access denied'
@@ -179,9 +175,7 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
   }
 });
 
-// @route   GET /api/responses/quiz/:quizId
-// @desc    Get quiz responses
-// @access  Admin
+
 router.get('/quiz/:quizId', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { limit = 50, page = 1 } = req.query;
@@ -210,9 +204,7 @@ router.get('/quiz/:quizId', authenticateToken, requireAdmin, async (req, res) =>
   }
 });
 
-// @route   GET /api/responses/leaderboard
-// @desc    Get quiz leaderboard
-// @access  Public
+
 router.get('/leaderboard', optionalAuth, async (req, res) => {
   try {
     const { limit = 20, page = 1 } = req.query;
@@ -311,12 +303,10 @@ router.get('/leaderboard', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   GET /api/responses/stats/:userId
-// @desc    Get user statistics
-// @access  Private (Admin or own stats)
+
 router.get('/stats/:userId', authenticateToken, async (req, res) => {
   try {
-    // Check if user can access these stats
+    
     if (req.user.role !== 'admin' && req.user._id.toString() !== req.params.userId) {
       return res.status(403).json({
         message: 'Access denied'

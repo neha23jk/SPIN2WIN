@@ -5,9 +5,7 @@ const { authenticateToken, requireAdmin, optionalAuth } = require('../middleware
 
 const router = express.Router();
 
-// @route   GET /api/announcements
-// @desc    Get all active announcements
-// @access  Public
+
 router.get('/', optionalAuth, async (req, res) => {
   try {
     const { priority, limit = 10, page = 1 } = req.query;
@@ -41,9 +39,7 @@ router.get('/', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   GET /api/announcements/:id
-// @desc    Get single announcement
-// @access  Public
+
 router.get('/:id', optionalAuth, async (req, res) => {
   try {
     const announcement = await Announcement.findById(req.params.id)
@@ -64,9 +60,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   POST /api/announcements
-// @desc    Create new announcement
-// @access  Admin
+
 router.post('/', authenticateToken, requireAdmin, [
   body('title')
     .trim()
@@ -82,7 +76,7 @@ router.post('/', authenticateToken, requireAdmin, [
     .withMessage('Priority must be low, medium, high, or urgent')
 ], async (req, res) => {
   try {
-    // Check validation errors
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -116,9 +110,7 @@ router.post('/', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   PUT /api/announcements/:id
-// @desc    Update announcement
-// @access  Admin
+
 router.put('/:id', authenticateToken, requireAdmin, [
   body('title')
     .optional()
@@ -136,7 +128,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
     .withMessage('Priority must be low, medium, high, or urgent')
 ], async (req, res) => {
   try {
-    // Check validation errors
+   
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -179,9 +171,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   DELETE /api/announcements/:id
-// @desc    Delete announcement
-// @access  Admin
+
 router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const announcement = await Announcement.findById(req.params.id);
@@ -204,9 +194,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// @route   GET /api/announcements/admin/all
-// @desc    Get all announcements (including inactive) - Admin only
-// @access  Admin
+
 router.get('/admin/all', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { priority, isActive, limit = 20, page = 1 } = req.query;

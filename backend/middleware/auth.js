@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Verify JWT token
+
 const authenticateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+    const token = authHeader && authHeader.split(' ')[1]; 
 
     if (!token) {
       return res.status(401).json({ 
@@ -48,7 +48,6 @@ const authenticateToken = async (req, res, next) => {
   }
 };
 
-// Check if user is admin
 const requireAdmin = (req, res, next) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ 
@@ -58,7 +57,6 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-// Check if user is admin or the resource owner
 const requireAdminOrOwner = (req, res, next) => {
   if (req.user.role === 'admin' || req.user._id.toString() === req.params.userId) {
     return next();
@@ -69,7 +67,6 @@ const requireAdminOrOwner = (req, res, next) => {
   });
 };
 
-// Optional authentication (doesn't fail if no token)
 const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers['authorization'];
@@ -86,7 +83,6 @@ const optionalAuth = async (req, res, next) => {
     
     next();
   } catch (error) {
-    // Continue without authentication
     next();
   }
 };

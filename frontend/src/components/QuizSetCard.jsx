@@ -27,7 +27,7 @@ const QuizSetCard = ({
     if (quizStarted && currentQuestion && timeRemaining > 0) {
       const timer = setTimeout(() => {
         if (timeRemaining > 0) {
-          // Timer will be handled by parent component
+         
         }
       }, 1000)
       return () => clearTimeout(timer)
@@ -57,21 +57,18 @@ const QuizSetCard = ({
     const newTotalScore = updatedAnswers.reduce((total, answer) => total + answer.points, 0)
     setTotalScore(newTotalScore)
 
-    // Submit answer to backend
     await onSubmitAnswer()
 
-    // Move to next question or complete quiz
     if (currentQuestionIndex < quizSet.questions.length - 1) {
       setTimeout(() => {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
-        onAnswerSelect(null) // Reset selected answer
-        // Reset timer for next question
+        onAnswerSelect(null) 
         if (quizSet.questions[currentQuestionIndex + 1]) {
-          // Parent component should handle timer reset
+          
         }
-      }, 2000) // Show result for 2 seconds
+      }, 2000) 
     } else {
-      // Quiz completed
+      
       setQuizCompleted(true)
       playSound('victory')
     }

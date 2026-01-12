@@ -6,9 +6,7 @@ const { authenticateToken, requireAdmin, optionalAuth } = require('../middleware
 
 const router = express.Router();
 
-// @route   GET /api/bladers
-// @desc    Get all bladers
-// @access  Public
+
 router.get('/', optionalAuth, async (req, res) => {
   try {
     const { round, isEliminated, limit = 50, page = 1 } = req.query;
@@ -40,9 +38,7 @@ router.get('/', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   GET /api/bladers/top16
-// @desc    Get top 16 bladers for leaderboard
-// @access  Public
+
 router.get('/top16', optionalAuth, async (req, res) => {
   try {
     const bladers = await Blader.find({ isEliminated: false })
@@ -58,9 +54,7 @@ router.get('/top16', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   GET /api/bladers/:id
-// @desc    Get single blader
-// @access  Public
+
 router.get('/:id', optionalAuth, async (req, res) => {
   try {
     const blader = await Blader.findById(req.params.id);
@@ -71,7 +65,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
       });
     }
 
-    // Get recent matches
+   
     const recentMatches = await Match.find({
       $or: [
         { player1: blader._id },
@@ -96,9 +90,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   POST /api/bladers
-// @desc    Create new blader
-// @access  Admin
+
 router.post('/', authenticateToken, requireAdmin, [
   body('arenaId')
     .trim()
@@ -122,7 +114,7 @@ router.post('/', authenticateToken, requireAdmin, [
     .withMessage('Battle Number must be in format E1, S2, Q3, F1')
 ], async (req, res) => {
   try {
-    // Check validation errors
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -133,7 +125,7 @@ router.post('/', authenticateToken, requireAdmin, [
 
     const { arenaId, name, institute, beyCombo, battleNumber, round = 'elementary' } = req.body;
 
-    // Check if arena ID already exists
+   
     const existingBlader = await Blader.findOne({ arenaId });
     if (existingBlader) {
       return res.status(400).json({
@@ -164,9 +156,7 @@ router.post('/', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   PUT /api/bladers/:id
-// @desc    Update blader
-// @access  Admin
+
 router.put('/:id', authenticateToken, requireAdmin, [
   body('name')
     .optional()
@@ -189,7 +179,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
     .withMessage('Round must be elementary, quarter, semi, final, or champion')
 ], async (req, res) => {
   try {
-    // Check validation errors
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -232,9 +222,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   DELETE /api/bladers/:id
-// @desc    Delete blader
-// @access  Admin
+
 router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const blader = await Blader.findById(req.params.id);
@@ -244,7 +232,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
       });
     }
 
-    // Check if blader has any matches
+    
     const hasMatches = await Match.findOne({
       $or: [
         { player1: blader._id },
@@ -271,9 +259,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// @route   GET /api/bladers/bracket/current
-// @desc    Get current tournament bracket
-// @access  Public
+
 router.get('/bracket/current', optionalAuth, async (req, res) => {
   try {
     const bracket = {

@@ -34,7 +34,7 @@ const LiveQuiz = () => {
       const data = await response.json()
       setActiveQuiz(data.quizSet)
       if (data.quizSet) {
-        // For quiz sets, we'll show the first question initially
+        
         setTimeRemaining(data.quizSet.questions[0]?.timeLimit || 30)
       }
     } catch (error) {

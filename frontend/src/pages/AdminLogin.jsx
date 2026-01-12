@@ -55,7 +55,7 @@ const AdminLogin = () => {
       if (response.ok) {
         localStorage.setItem('token', data.token)
         
-        // Update auth context
+        
         const authResponse = await fetch('/api/auth/me', {
           headers: {
             'Authorization': `Bearer ${data.token}`
@@ -64,7 +64,7 @@ const AdminLogin = () => {
         
         if (authResponse.ok) {
           const authData = await authResponse.json()
-          // Manually update the auth context
+          
           window.location.href = '/admin'
         }
       } else {

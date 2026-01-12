@@ -9,9 +9,7 @@ const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
-// @route   POST /api/admin/login
-// @desc    Admin login (same as regular login but with admin role check)
-// @access  Public
+
 router.post('/login', [
   body('email')
     .isEmail()
@@ -22,7 +20,7 @@ router.post('/login', [
     .withMessage('Password is required')
 ], async (req, res) => {
   try {
-    // Check validation errors
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -33,7 +31,7 @@ router.post('/login', [
 
     const { email, password } = req.body;
 
-    // Find user by email
+    
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
@@ -41,21 +39,21 @@ router.post('/login', [
       });
     }
 
-    // Check if user is admin
+   
     if (user.role !== 'admin') {
       return res.status(403).json({
         message: 'Admin access required'
       });
     }
 
-    // Check if account is active
+    
     if (!user.isActive) {
       return res.status(400).json({
         message: 'Account is deactivated'
       });
     }
 
-    // Check password
+    
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({
@@ -63,7 +61,7 @@ router.post('/login', [
       });
     }
 
-    // Generate token
+   
     const jwt = require('jsonwebtoken');
     const token = jwt.sign(
       { userId: user._id },
@@ -91,9 +89,7 @@ router.post('/login', [
   }
 });
 
-// @route   GET /api/admin/dashboard/stats
-// @desc    Get dashboard statistics
-// @access  Admin
+
 router.get('/dashboard/stats', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const [
@@ -138,9 +134,7 @@ router.get('/dashboard/stats', authenticateToken, requireAdmin, async (req, res)
   }
 });
 
-// @route   GET /api/admin/users
-// @desc    Get all users (admin only)
-// @access  Admin
+
 router.get('/users', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { limit = 50, page = 1, search, role } = req.query;
@@ -179,9 +173,7 @@ router.get('/users', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// @route   PUT /api/admin/users/:id/role
-// @desc    Update user role
-// @access  Admin
+
 router.put('/users/:id/role', authenticateToken, requireAdmin, [
   body('role')
     .isIn(['user', 'admin'])
@@ -199,7 +191,6 @@ router.put('/users/:id/role', authenticateToken, requireAdmin, [
     const { role } = req.body;
     const userId = req.params.id;
 
-    // Prevent admin from changing their own role
     if (userId === req.user._id.toString()) {
       return res.status(400).json({
         message: 'Cannot change your own role'
@@ -230,14 +221,12 @@ router.put('/users/:id/role', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   PUT /api/admin/users/:id/status
-// @desc    Toggle user active status
-// @access  Admin
+
 router.put('/users/:id/status', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const userId = req.params.id;
 
-    // Prevent admin from deactivating themselves
+    
     if (userId === req.user._id.toString()) {
       return res.status(400).json({
         message: 'Cannot deactivate your own account'
@@ -272,9 +261,7 @@ router.put('/users/:id/status', authenticateToken, requireAdmin, async (req, res
   }
 });
 
-// @route   GET /api/admin/export/bladers
-// @desc    Export bladers data as CSV/JSON
-// @access  Admin
+
 router.get('/export/bladers', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { format = 'json' } = req.query;
@@ -306,9 +293,7 @@ router.get('/export/bladers', authenticateToken, requireAdmin, async (req, res) 
   }
 });
 
-// @route   GET /api/admin/export/matches
-// @desc    Export matches data as CSV/JSON
-// @access  Admin
+
 router.get('/export/matches', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { format = 'json' } = req.query;

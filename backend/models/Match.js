@@ -50,7 +50,7 @@ const matchSchema = new mongoose.Schema({
     default: null
   },
   battleDuration: {
-    type: Number, // in seconds
+    type: Number, 
     default: null
   },
   battleNumber: {
@@ -90,12 +90,10 @@ const matchSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Indexes for efficient queries
 matchSchema.index({ round: 1, status: 1 });
 matchSchema.index({ scheduledAt: 1 });
 matchSchema.index({ player1: 1, player2: 1 });
 
-// Virtual for battle result
 matchSchema.virtual('result').get(function() {
   if (this.status === 'completed' && this.winner) {
     return {

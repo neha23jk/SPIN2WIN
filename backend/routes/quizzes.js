@@ -7,9 +7,7 @@ const { authenticateToken, requireAdmin, optionalAuth } = require('../middleware
 
 const router = express.Router();
 
-// @route   GET /api/quizzes
-// @desc    Get all quizzes
-// @access  Public
+
 router.get('/', optionalAuth, async (req, res) => {
   try {
     const { isActive, isCompleted, category, difficulty, limit = 20, page = 1 } = req.query;
@@ -43,9 +41,7 @@ router.get('/', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   GET /api/quizzes/active
-// @desc    Get currently active quiz
-// @access  Public
+
 router.get('/active', optionalAuth, async (req, res) => {
   try {
     const activeQuiz = await Quiz.findOne({ isActive: true, isCompleted: false })
@@ -55,7 +51,7 @@ router.get('/active', optionalAuth, async (req, res) => {
       return res.json({ quiz: null });
     }
 
-    // Don't send correct answer to non-admin users
+    
     const quizData = activeQuiz.toObject();
     if (!req.user || req.user.role !== 'admin') {
       delete quizData.correctAnswer;
@@ -70,9 +66,7 @@ router.get('/active', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   GET /api/quizzes/:id
-// @desc    Get single quiz
-// @access  Public
+
 router.get('/:id', optionalAuth, async (req, res) => {
   try {
     const quiz = await Quiz.findById(req.params.id);
@@ -83,7 +77,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
       });
     }
 
-    // Don't send correct answer to non-admin users
+  
     const quizData = quiz.toObject();
     if (!req.user || req.user.role !== 'admin') {
       delete quizData.correctAnswer;
@@ -98,9 +92,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   POST /api/quizzes
-// @desc    Create new quiz
-// @access  Admin
+
 router.post('/', authenticateToken, requireAdmin, [
   body('battleNumber')
     .trim()
@@ -126,7 +118,7 @@ router.post('/', authenticateToken, requireAdmin, [
     .withMessage('Time limit must be between 10 and 300 seconds')
 ], async (req, res) => {
   try {
-    // Check validation errors
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -147,7 +139,7 @@ router.post('/', authenticateToken, requireAdmin, [
       description
     } = req.body;
 
-    // Validate correct answer index
+    
     if (correctAnswer >= options.length) {
       return res.status(400).json({
         message: 'Correct answer index is out of range'
@@ -180,9 +172,7 @@ router.post('/', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   PUT /api/quizzes/:id
-// @desc    Update quiz
-// @access  Admin
+
 router.put('/:id', authenticateToken, requireAdmin, [
   body('question')
     .optional()
@@ -207,7 +197,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
     .withMessage('Time limit must be between 10 and 300 seconds')
 ], async (req, res) => {
   try {
-    // Check validation errors
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -234,7 +224,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
       });
     }
 
-    // Validate correct answer index if options are provided
+   
     if (options && correctAnswer >= options.length) {
       return res.status(400).json({
         message: 'Correct answer index is out of range'
@@ -269,9 +259,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   POST /api/quizzes/:id/start
-// @desc    Start quiz
-// @access  Admin
+
 router.post('/:id/start', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const quiz = await Quiz.findById(req.params.id);
@@ -307,9 +295,7 @@ router.post('/:id/start', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// @route   POST /api/quizzes/:id/end
-// @desc    End quiz
-// @access  Admin
+
 router.post('/:id/end', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const quiz = await Quiz.findById(req.params.id);
@@ -339,9 +325,7 @@ router.post('/:id/end', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// @route   DELETE /api/quizzes/:id
-// @desc    Delete quiz
-// @access  Admin
+
 router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const quiz = await Quiz.findById(req.params.id);
@@ -351,7 +335,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
       });
     }
 
-    // Check if quiz has responses
+    
     const hasResponses = await Response.findOne({ quiz: quiz._id });
     if (hasResponses) {
       return res.status(400).json({

@@ -5,9 +5,7 @@ const { authenticateToken, requireAdmin, optionalAuth } = require('../middleware
 
 const router = express.Router();
 
-// @route   GET /api/event
-// @desc    Get event information
-// @access  Public
+
 router.get('/', optionalAuth, async (req, res) => {
   try {
     const eventInfo = await EventInfo.findOne({ isActive: true })
@@ -28,9 +26,7 @@ router.get('/', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   PUT /api/event
-// @desc    Update event information
-// @access  Admin
+
 router.put('/', authenticateToken, requireAdmin, [
   body('title')
     .optional()
@@ -63,7 +59,7 @@ router.put('/', authenticateToken, requireAdmin, [
     .withMessage('Location must be between 5 and 200 characters')
 ], async (req, res) => {
   try {
-    // Check validation errors
+  
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -74,7 +70,7 @@ router.put('/', authenticateToken, requireAdmin, [
 
     const updateData = req.body;
 
-    // Convert date strings to Date objects
+   
     if (updateData.date) updateData.date = new Date(updateData.date);
     if (updateData.registrationOpen) updateData.registrationOpen = new Date(updateData.registrationOpen);
     if (updateData.registrationClose) updateData.registrationClose = new Date(updateData.registrationClose);
@@ -101,9 +97,7 @@ router.put('/', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   POST /api/event
-// @desc    Create event information
-// @access  Admin
+
 router.post('/', authenticateToken, requireAdmin, [
   body('title')
     .trim()
@@ -148,7 +142,7 @@ router.post('/', authenticateToken, requireAdmin, [
     .withMessage('Tournament end date must be a valid ISO 8601 date')
 ], async (req, res) => {
   try {
-    // Check validation errors
+   
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -179,7 +173,6 @@ router.post('/', authenticateToken, requireAdmin, [
       theme = {}
     } = req.body;
 
-    // Deactivate existing event info
     await EventInfo.updateMany({}, { isActive: false });
 
     const eventInfo = new EventInfo({
@@ -218,9 +211,6 @@ router.post('/', authenticateToken, requireAdmin, [
   }
 });
 
-// @route   GET /api/event/status
-// @desc    Get event status
-// @access  Public
 router.get('/status', optionalAuth, async (req, res) => {
   try {
     const eventInfo = await EventInfo.findOne({ isActive: true })

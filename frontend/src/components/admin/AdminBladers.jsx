@@ -42,7 +42,6 @@ const AdminBladers = () => {
     }
   }
 
-  // Filter bladers based on search term and round
   useEffect(() => {
     let filtered = bladers
 
